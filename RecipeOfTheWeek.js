@@ -8,7 +8,7 @@ const RecipeOfTheWeekScreen = () => {
   useEffect(() => {
     // Fetch the recipe from Firestore when the screen loads
     const fetchRecipe = async () => {
-      const recipeRef = doc(db, "recipes", "NLN7yT5r7g3JDAA6IPwf"); // Replace 'yourRecipeId' with the actual recipe ID
+      const recipeRef = doc(db, "recipes", "URbNjvST6CZRSQg3HMY4"); // Replace 'yourRecipeId' with the actual recipe ID
       try {
         const docSnap = await getDoc(recipeRef);
         if (docSnap.exists()) {

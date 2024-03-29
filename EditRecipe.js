@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { View, TextInput, StyleSheet, Button, TouchableOpacity, Image, Alert, Text } from 'react-native';
 import { doc, getDoc, updateDoc, getFirestore } from 'firebase/firestore';
-
+import { IoPencil } from "react-icons/io5";
+import {FIRESTORE_DB as db} from './db/firebase'
 const RecipeEditScreen = ({ route, navigation }) => {
   // Initialize Firestore
-  const db = getFirestore();
-
+  
   // State to hold the recipe data
   const [recipe, setRecipe] = useState({
     title: '',
     ingredients: []
   });
+  const [isEditing, setIsEditing] = useState(false);
+
   // Extract the recipe ID from the navigation parameters
-  const recipeId = 'NLN7yT5r7g3JDAA6IPwf'
+  const recipeId = 'URbNjvST6CZRSQg3HMY4'
   useEffect(() => {
     // Fetch the recipe from Firestore using the recipeId
     const fetchRecipe = async () => {
@@ -54,19 +56,34 @@ const RecipeEditScreen = ({ route, navigation }) => {
         style={styles.titleInput}
         value={recipe.title}
         onChangeText={(text) => setRecipe(prev => ({ ...prev, title: text }))}
+        editable={isEditing}
       />
       <TextInput
         style={styles.ingredientsInput}
         value={recipe.ingredients.join('\n')}
         onChangeText={(text) => setRecipe(prev => ({ ...prev, ingredients: text.split('\n') }))}
         multiline
+        editable={isEditing}
       />
-      <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-        <Text>Save Recipe</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.editIcon} onPress={() => {/* logic to enable edit mode if necessary */}}>
-        {/* <Image source={require('./path-to-your-pencil-icon.png')} /> */}
-        <Text>Edit</Text>
+
+      <TouchableOpacity
+        style={styles.editIcon}
+        onPress={() => {
+          if (isEditing) {
+            // Save the recipe
+            handleSave();
+          }
+          setIsEditing(!isEditing);
+        }}
+      >
+        {isEditing ? (
+          // This is a placeholder for a save (tick) icon
+          <View style={styles.saveIcon}>
+            <Text style={styles.saveIconText}>✔</Text>
+          </View>
+        ) : (
+          <Image source={require('./assets/edit-03.png')} />
+        )}
       </TouchableOpacity>
     </View>
   );
@@ -83,17 +100,15 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
-    borderColor: 'gray',
-    borderWidth: 1,
     padding: 10,
   },
   ingredientsInput: {
     fontSize: 16,
     height: 250, // Adjust as necessary
-    borderColor: 'gray',
-    borderWidth: 1,
     padding: 10,
     textAlignVertical: 'top',
+    flex: 1,
+
   },
   saveButton: {
     backgroundColor: '#ccc',
@@ -101,10 +116,21 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginTop: 20,
   },
+  saveIcon: {
+    // Placeholder styles for the save (tick) icon
+    width: 30,
+    height: 30,
+    backgroundColor: 'green',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 15,
+  },
+  saveIconText: {
+    color: 'white',
+    fontSize: 20,
+  },
   editIcon: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
+   left: "50%"
   },
 });
 
